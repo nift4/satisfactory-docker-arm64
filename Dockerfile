@@ -91,6 +91,7 @@ WORKDIR /home/steam/Steam
 # Download and run SteamCMD
 RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
+RUN chmod +x /home/steam/start.sh /home/steam/start2.sh
 ENTRYPOINT /home/steam/start.sh
 
 # Step 1: docker build --ulimit nofile=1048576:1048576 --tag 'satis' .
