@@ -56,8 +56,7 @@ RUN git clone --recurse-submodules https://github.com/FEX-Emu/FEX.git && \
 
 WORKDIR /home/fex/FEX/Build
 
-RUN sudo ninja install && \
-    sudo ninja binfmt_misc
+RUN sudo ninja install
 
 RUN sudo useradd -m -s /bin/bash steam
 
@@ -68,6 +67,8 @@ USER root
 RUN echo 'root:steamcmd' | chpasswd
 
 USER steam
+
+RUN mkdir -p /home/steam/.fex-emu/RootFS/ /home/steam/Steam
 
 WORKDIR /home/steam/.fex-emu/RootFS/
 
@@ -83,11 +84,14 @@ WORKDIR /home/steam/.fex-emu
 
 RUN echo '{"Config":{"RootFS":"Ubuntu_22_04"}}' > ./Config.json
 RUN echo 'env CPU_MHZ=3000 FEXBash /home/steam/start2.sh' > /home/steam/start.sh
-RUN echo 'cd /home/steam/Steam; ./steamcmd.sh +@sSteamCmdForcePlatformBitness 64 +force_install_dir ~/SatisfactoryDedicatedServer +login anonymous +app_update 1690800 -beta experimental validate +quit' > /home/steam/start2.sh
+RUN echo 'cd /home/steam/Steam; ./steamcmd.sh +@sSteamCmdForcePlatformBitness 64 +force_install_dir ~/SatisfactoryDedicatedServer +login anonymous +app_update 1690800 -beta experimental validate +quit; chmod -R 777 ~/SatisfactoryDedicatedServer; cd ~/SatisfactoryDedicatedServer/; ./FactoryServer.sh -log' > /home/steam/start2.sh
 
 WORKDIR /home/steam/Steam
 
 # Download and run SteamCMD
 RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
-ENTRYPOINT FEXBash ./steamcmd.sh
+ENTRYPOINT /home/steam/start.sh
+
+# Step 1: docker build --ulimit nofile=1048576:1048576 --tag 'satis' .
+# Step 2: docker run --name debian-satisfactory-server -p 7777:7777 -p 15000:15000 -p 15777:15777 satis
