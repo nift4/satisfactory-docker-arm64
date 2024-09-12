@@ -84,7 +84,7 @@ WORKDIR /home/steam/.fex-emu
 
 RUN echo '{"Config":{"RootFS":"Ubuntu_22_04"}}' > ./Config.json
 RUN echo 'env CPU_MHZ=3000 FEXBash /home/steam/start2.sh' > /home/steam/start.sh
-RUN echo 'cd /home/steam/Steam; ./steamcmd.sh +@sSteamCmdForcePlatformBitness 64 +force_install_dir ~/SatisfactoryDedicatedServer +login anonymous +app_update 1690800 -beta experimental validate +quit; chmod -R 777 ~/SatisfactoryDedicatedServer; cd ~/SatisfactoryDedicatedServer/; ./FactoryServer.sh -log' > /home/steam/start2.sh
+RUN echo 'cd /home/steam/Steam; ./steamcmd.sh +@sSteamCmdForcePlatformBitness 64 +force_install_dir ~/SatisfactoryDedicatedServer +login anonymous +app_update 1690800 -beta experimental validate +quit; chmod -R 777 ~/SatisfactoryDedicatedServer; cd ~/SatisfactoryDedicatedServer/; ./FactoryServer.sh -log -Port 17777' > /home/steam/start2.sh
 
 WORKDIR /home/steam/Steam
 
@@ -95,4 +95,4 @@ RUN chmod +x /home/steam/start.sh /home/steam/start2.sh
 ENTRYPOINT /home/steam/start.sh
 
 # Step 1: docker build --ulimit nofile=1048576:1048576 --tag 'satis' .
-# Step 2: docker run --name debian-satisfactory-server -p 7777:7777 -p 15000:15000 -p 15777:15777 satis
+# Step 2: docker run --name debian-satisfactory-server -p 7777:7777 -p 17777:17777 -p 15000:15000 -p 15777:15777 satis
